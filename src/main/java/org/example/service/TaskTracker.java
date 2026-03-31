@@ -22,13 +22,15 @@ public class TaskTracker {
         tasks.add(task);
         mapper.writerWithDefaultPrettyPrinter().writeValue(archive,tasks);
     }
+
     public List<Task> loadTasks() throws IOException{
         if(!archive.exists() || archive.length() == 0){
             return new ArrayList<>();
         }
         return mapper.readValue(archive, new TypeReference<List<Task>>() {});
     }
-    public void update(int targetId,String description) throws IOException{
+
+    public void update(int targetId, String progress) throws IOException{
         List<Task> tasks = loadTasks();
 
         Optional<Task> match = tasks.stream()
@@ -37,12 +39,13 @@ public class TaskTracker {
 
         if(match.isPresent()){
             Task t = match.get();
-            t.setDescription(description);
+            t.setProgress(progress);
             mapper.writerWithDefaultPrettyPrinter().writeValue(archive,tasks);
         }else {
             System.out.println(targetId+" Not found");
         }
     }
+
     public void delete(int targetId) throws IOException {
         List<Task> tasks = loadTasks();
 
@@ -56,6 +59,40 @@ public class TaskTracker {
             mapper.writerWithDefaultPrettyPrinter().writeValue(archive,tasks);
         }else{
             System.out.println(targetId+" Not Found");
+        }
+    }
+
+    public void listAll() throws IOException {
+        List<Task> tasks = loadTasks();
+        for(Task t:tasks){
+            System.out.println(t);
+        }
+    }
+
+    public void listAllDone() throws IOException {
+        List<Task> tasks = loadTasks();
+        for (Task t : tasks) {
+            if (t.getProgress().equals("Done")) {
+                System.out.println(t);
+            }
+        }
+    }
+
+    public void listAllInProgress() throws IOException {
+        List<Task> tasks = loadTasks();
+        for(Task t:tasks) {
+            if (t.getProgress().equals("In Progress")) {
+                System.out.println(t);
+            }
+        }
+    }
+
+    public void listAllToDo() throws IOException {
+        List<Task> tasks = loadTasks();
+        for(Task t:tasks) {
+            if (t.getProgress().equals("To Do")) {
+                System.out.println(t);
+            }
         }
     }
 }

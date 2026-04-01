@@ -1,25 +1,22 @@
 package org.example.model;
 
 import org.example.enums.Progress;
-
 import java.time.LocalDate;
 
 public class Task {
-    private static int cont = 0;
-    private int id=0;
+    private int id;
     private String description;
-    private String progress;
+    private Progress progress;
     private final LocalDate createdAt = LocalDate.now();
     private LocalDate updatedAt;
 
     public Task(){
 
     }
-    public Task(String description) {
-        this.id = cont;
-        cont++;
+    public Task(int id,String description) {
+        this.id = id;
         this.description = description;
-        this.progress = "To Do";
+        this.progress = Progress.TODO;
         this.updatedAt = createdAt;
     }
 
@@ -35,12 +32,11 @@ public class Task {
         this.description = description;
     }
 
-    public String getProgress() {
+    public Progress getProgress() {
         return this.progress;
     }
 
-    public void setProgress(String progress) {
-        this.updatedAt = LocalDate.now();
+    public void setProgress(Progress progress) {
         this.progress = progress;
     }
 
@@ -52,6 +48,6 @@ public class Task {
                 ", progress: " + progress +
                 ", createdAt: " + createdAt +
                 ", updatedAt: " + updatedAt +
-                '}';
+                "}";
     }
 }

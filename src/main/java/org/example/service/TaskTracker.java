@@ -17,8 +17,10 @@ public class TaskTracker {
     private final File archive = new File("tasks.json");
 
     public void addTask(String description) throws IOException {
-        Task task = new Task(description);
         List<Task> tasks = loadTasks();
+        int id = (tasks == null || tasks.isEmpty()) ? 0 :
+                tasks.stream().mapToInt(Task::getId).max().getAsInt() + 1;
+        Task task = new Task(id,description);
         tasks.add(task);
         mapper.writerWithDefaultPrettyPrinter().writeValue(archive,tasks);
     }
@@ -30,7 +32,7 @@ public class TaskTracker {
         return mapper.readValue(archive, new TypeReference<List<Task>>() {});
     }
 
-    public void update(int targetId, String progress) throws IOException{
+    public void update(int targetId, Progress progress) throws IOException{
         List<Task> tasks = loadTasks();
 
         Optional<Task> match = tasks.stream()
@@ -72,7 +74,7 @@ public class TaskTracker {
     public void listAllDone() throws IOException {
         List<Task> tasks = loadTasks();
         for (Task t : tasks) {
-            if (t.getProgress().equals("Done")) {
+            if (t.getProgress().equals(Progress.DONE)) {
                 System.out.println(t);
             }
         }
@@ -81,7 +83,7 @@ public class TaskTracker {
     public void listAllInProgress() throws IOException {
         List<Task> tasks = loadTasks();
         for(Task t:tasks) {
-            if (t.getProgress().equals("In Progress")) {
+            if (t.getProgress().equals(Progress.IN_PROGRESS)) {
                 System.out.println(t);
             }
         }
@@ -90,7 +92,7 @@ public class TaskTracker {
     public void listAllToDo() throws IOException {
         List<Task> tasks = loadTasks();
         for(Task t:tasks) {
-            if (t.getProgress().equals("To Do")) {
+            if (t.getProgress().equals(Progress.TODO)) {
                 System.out.println(t);
             }
         }

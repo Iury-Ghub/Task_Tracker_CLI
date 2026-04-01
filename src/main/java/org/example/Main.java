@@ -1,21 +1,19 @@
 package org.example;
 
+import org.example.enums.Progress;
 import org.example.service.TaskTracker;
 
 import java.io.IOException;
 import java.util.Scanner;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) throws IOException {
         TaskTracker taskTracker = new TaskTracker();
         Scanner scanner = new Scanner(System.in);
-        int choice;
-        int id;
+        int choice,id;
+        Progress progress;
         String string;
         do {
-            taskTracker.listAll();
             System.out.println(
                     """
                             1- Add new task
@@ -25,9 +23,8 @@ public class Main {
                             5- List to do tasks
                             6- List in progress tasks
                             7- List Done tasks
-                            0- Exit
-                            
-                            """);
+                            0- Exit""");
+            System.out.print("Choice: ");
             choice = scanner.nextInt();
 
             switch (choice) {
@@ -40,10 +37,38 @@ public class Main {
                     System.out.print("ID to remove: ");
                     id = scanner.nextInt();
                     taskTracker.delete(id);
+                    break;
                 case 3:
                     System.out.print("ID to edit: ");
                     id = scanner.nextInt();
-                    taskTracker.
+                    System.out.print(
+                            """
+                            1.To do
+                            2.In progress
+                            3.Done
+                            Choice:\s""");
+                    choice = scanner.nextInt();
+                    if(choice == 1) {
+                        progress = Progress.TODO;
+                    } else if (choice == 2) {
+                        progress = Progress.IN_PROGRESS;
+                    }else {
+                        progress = Progress.DONE;
+                    }
+                    taskTracker.update(id,progress);
+                    break;
+                case 4:
+                    taskTracker.listAll();
+                    break;
+                case 5:
+                    taskTracker.listAllToDo();
+                    break;
+                case 6:
+                    taskTracker.listAllInProgress();
+                    break;
+                case 7:
+                    taskTracker.listAllDone();
+                    break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + choice);
             }
